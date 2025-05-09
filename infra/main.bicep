@@ -1,25 +1,51 @@
+/*
+  Azure API Management Infrastructure Deployment
+  
+  This template deploys the following resources at subscription level:
+  - Resource group for containing all solution resources
+  - API Management service via the apiManagement.bicep module
+  
+  Author: Your Organization
+  Last Updated: May 9, 2025
+*/
+
+// Set deployment scope to subscription level
 targetScope = 'subscription'
 
-@minLength(1)
-@maxLength(64)
-@description('Name of the environment that can be used as part of naming resource convention')
-param environmentName string
+@description('Name of the overall solution used for resource naming convention')
+@minLength(3)
+@maxLength(24)
+param solutionName string
 
+@description('Primary Azure region for all resources')
 @minLength(1)
-@description('Primary location for all resources')
 param location string
 
-// Tags that should be applied to all resources.
-// 
-// Note that 'azd-service-name' tags should be applied separately to service host resources.
-// Example usage:
-//   tags: union(tags, { 'azd-service-name': <service name in azure.yaml> })
-var tags = {
-  'azd-env-name': environmentName
+// Resource group to contain all solution resources
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: '${solutionName}-rg'
+  location: location
+  tags: {
+    Solution: solutionName
+    Environment: 'Production'
+    DeployedBy: 'Bicep'
+  }
 }
 
-resource rg 'Microsoft.Resources/resourceGroups@2022-09-01' = {
-  name: 'rg-${environmentName}'
-  location: location
-  tags: tags
+// Deploy API Management service using the module
+module apim 'azureAPIManagement/apiManagement.bicep' = {
+  scope: resourceGroup
+  name: 'apiManagementDeployment'
+  params: {
+    solutionName: solutionName
+    location: location
+  }
 }
+
+// Output the resource group name for reference
+@description('The name of the resource group containing all deployed resources')
+output AZURE_RESOURCE_GROUP_NAME string = resourceGroup.name
+
+// Output API Management deployment name
+@description('The name of the API Management deployment')
+output AZURE_APIM_NAME string = apim.outputs.AZURE_APIM_NAME
