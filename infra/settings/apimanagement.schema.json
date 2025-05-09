@@ -1,0 +1,195 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "version": "1.0.0",
+    "name": "apiManagement",
+    "title": "Azure API Management Configuration",
+    "description": "Schema for Azure API Management configuration",
+    "required": [
+        "name",
+        "location",
+        "sku",
+        "publisherEmail",
+        "publisherName"
+    ],
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "The name of the API Management service instance"
+        },
+        "location": {
+            "type": "string",
+            "description": "The Azure region where the API Management service is deployed"
+        },
+        "sku": {
+            "type": "object",
+            "description": "The SKU configuration for the API Management service",
+            "required": [
+                "name",
+                "capacity"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "The name of the SKU (e.g., Developer, Basic, Standard, Premium, Consumption)",
+                    "enum": [
+                        "Developer",
+                        "Basic",
+                        "Standard",
+                        "Premium",
+                        "Consumption"
+                    ]
+                },
+                "capacity": {
+                    "type": "integer",
+                    "description": "The number of deployed units of the API Management service (not applicable for Consumption tier)",
+                    "minimum": 1
+                }
+            }
+        },
+        "publisherEmail": {
+            "type": "string",
+            "description": "The email address of the API publisher",
+            "format": "email"
+        },
+        "publisherName": {
+            "type": "string",
+            "description": "The name of the API publisher"
+        },
+        "virtualNetworkType": {
+            "type": "string",
+            "description": "The type of VNet integration for the API Management service",
+            "enum": [
+                "None",
+                "External",
+                "Internal"
+            ]
+        },
+        "additionalLocations": {
+            "type": "array",
+            "description": "Additional deployment locations for the API Management service",
+            "items": {
+                "type": "object",
+                "required": [
+                    "location",
+                    "sku"
+                ],
+                "properties": {
+                    "location": {
+                        "type": "string",
+                        "description": "The Azure region for this additional location"
+                    },
+                    "sku": {
+                        "type": "object",
+                        "required": [
+                            "name",
+                            "capacity"
+                        ],
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "enum": [
+                                    "Developer",
+                                    "Basic",
+                                    "Standard",
+                                    "Premium"
+                                ]
+                            },
+                            "capacity": {
+                                "type": "integer",
+                                "minimum": 1
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "customProperties": {
+            "type": "object",
+            "description": "Custom properties for the API Management service",
+            "additionalProperties": {
+                "type": "string"
+            }
+        },
+        "certificates": {
+            "type": "array",
+            "description": "List of certificates to be installed on the API Management service",
+            "items": {
+                "type": "object",
+                "required": [
+                    "encodedCertificate",
+                    "certificatePassword",
+                    "storeName"
+                ],
+                "properties": {
+                    "encodedCertificate": {
+                        "type": "string",
+                        "description": "Base64-encoded certificate"
+                    },
+                    "certificatePassword": {
+                        "type": "string",
+                        "description": "Password for the certificate"
+                    },
+                    "storeName": {
+                        "type": "string",
+                        "description": "Certificate store name",
+                        "enum": [
+                            "CertificateAuthority",
+                            "Root",
+                            "TrustedPeople"
+                        ]
+                    }
+                }
+            }
+        },
+        "identityProviders": {
+            "type": "object",
+            "description": "Identity provider configurations",
+            "properties": {
+                "microsoft": {
+                    "type": "object",
+                    "properties": {
+                        "clientId": {
+                            "type": "string"
+                        },
+                        "clientSecret": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "google": {
+                    "type": "object",
+                    "properties": {
+                        "clientId": {
+                            "type": "string"
+                        },
+                        "clientSecret": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "aad": {
+                    "type": "object",
+                    "properties": {
+                        "clientId": {
+                            "type": "string"
+                        },
+                        "clientSecret": {
+                            "type": "string"
+                        },
+                        "tenant": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "tags": {
+            "type": "object",
+            "description": "Resource tags for the API Management service",
+            "additionalProperties": {
+                "type": "string"
+            }
+        }
+    }
+}
