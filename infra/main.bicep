@@ -22,7 +22,7 @@ param solutionName string
 param location string
 
 // Resource group to contain all solution resources
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: '${solutionName}-rg'
   location: location
   tags: {

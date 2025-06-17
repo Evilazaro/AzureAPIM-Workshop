@@ -16,7 +16,7 @@ param location string = resourceGroup().location
 var apimSettings = loadYamlContent('../settings/apimsettings.yaml')
 
 @description('API Management service instance')
-resource apiManagementInstance 'Microsoft.ApiManagement/service@2024-06-01-preview' = {
+resource apiManagementInstance 'Microsoft.ApiManagement/service@2024-05-01' = {
   name: '${solutionName}-${uniqueString(resourceGroup().id)}-apim' // Construct the name using the solution name
   location: location
 
